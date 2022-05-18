@@ -8,46 +8,33 @@ const urlModel = require ("../model/urlModel")
 
 const createUrl = async function (req, res) {
 
-    
-    
     const baseUrl = "http://localhost:3000"
 
     //checking the baseUrl if it is valid or not using "validUrl.isUri" method
     if(!validUrl.isUri(baseUrl)){
         return res.status(400).send ({ status: false, msg:"Invalid baseUrl"})
     }
-
-    const urlCode = shortid.generate()
-
-   
+     
     //checking the longUrl if it is valid or not using "validUrl.isUri" method
-    const {longUrl} = req.body
-  
-    if(validUrl.isUri(longUrl)){
+    const data = req.body
+     data.urlCode = shortid.generate()
+    if(validUrl.isUri(data.longUrl)){
 
        try{
-            let url = await urlModel.findOne({longUrl})
+            let url = await urlModel.findOne({longUrl:data.longUrl})
         
             if (url){
             res.send(url)
         }
         else{
-             const shortUrl = baseUrl + '/' + urlCode  // join the generated urlCode and the baseUrl
+             data.shortUrl = baseUrl + '/' +data.urlCode  // join the generated urlCode and the baseUrl
              
-             url = new urlModel ({
-
-                longUrl,
-                shortUrl,
-                urlCode,
-
-            })
-            await url.save()
-            res.send(url)
+         let url = await urlModel.create(data)
+            res.status(201).send({msg: url})
         }
     }
-
     catch(err){
-        res.status(500).send({ status:false, msg:"err.message"});
+        res.status(500).send({ status:false, msg:err.message});
 
     }
 
@@ -58,9 +45,9 @@ const createUrl = async function (req, res) {
 
 const getUrl = async(req,res)=>{
    try{
-        let {urlCode} =req.params
+        let {urlCode} =req.params // destructuring 
     let fetchUrl =await urlModel.findOne({urlCode})
-    console.log(fetchUrl)
+   // console.log(fetchUrl)
     if(!fetchUrl) {
         return res.status(404).send({msg:"urlCode isn't found"})
     }
