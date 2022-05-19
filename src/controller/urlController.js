@@ -77,13 +77,13 @@ const getUrl = async(req,res)=>{
         let findCatch = await GET_ASYNC(`${req.params.urlCode}`)
       //  console.log(findCatch)
         if(findCatch){
-       return  res.redirect(findCatch)
+       return  res.redirect(JSON.parse(findCatch).longUrl)
        }
       else {
     let fetchUrl =await urlModel.findOne({urlCode:req.params.urlCode})
             if(!fetchUrl){ res.send("invalid urlCode")}
-            else{   await SET_ASYNC(`${urlCode}`, JSON.stringify(fetchUrl))
-            res.status(200).redirect({ data: fetchUrl.longUrl })  }
+            else{ await SET_ASYNC(`${urlCode}`, JSON.stringify(fetchUrl))
+            res.status(301).redirect(fetchUrl.longUrl)  }
         }
      //  else { res.redirect(JSON.parse(findCatch))}
    }
