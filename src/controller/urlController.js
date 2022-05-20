@@ -81,7 +81,7 @@ const getUrl = async(req,res)=>{
        }
       else {
     let fetchUrl =await urlModel.findOne({urlCode:req.params.urlCode})
-            if(!fetchUrl){ res.send("invalid urlCode")}
+            if(!fetchUrl){ res.status(404).send("url not found/invalid urlCode")}
             else{ await SET_ASYNC(`${urlCode}`, JSON.stringify(fetchUrl))
             res.status(301).redirect(fetchUrl.longUrl)  }
         }
