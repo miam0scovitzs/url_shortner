@@ -74,9 +74,9 @@ const getUrl = async(req,res)=>{
    try{
         let urlCode =req.params.urlCode // destructuring  n
 
-        // if(!validUrl.isUri(urlCode)){
-        //   return res.status(400).send ({ status: false, msg:"Invalid UrlCode"}) 
-        //      }   
+        if(!validUrl.isUri(urlCode)){
+          return res.status(400).send ({ status: false, msg:"Invalid UrlCode"}) 
+             }   
                if(!Object.keys(urlCode).length) return res.status(400).send({msg:"urlCode required"})
         let findCatch = await GET_ASYNC(`${req.params.urlCode}`)
       //  console.log(findCatch)
