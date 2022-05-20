@@ -73,7 +73,11 @@ const createUrl = async function (req, res) {
 const getUrl = async(req,res)=>{
    try{
         let urlCode =req.params.urlCode // destructuring  n
-       if(!Object.keys(urlCode).length) return res.status(400).send({msg:"urlCode required"})
+
+        // if(!validUrl.isUri(urlCode)){
+        //   return res.status(400).send ({ status: false, msg:"Invalid UrlCode"}) 
+        //      }   
+               if(!Object.keys(urlCode).length) return res.status(400).send({msg:"urlCode required"})
         let findCatch = await GET_ASYNC(`${req.params.urlCode}`)
       //  console.log(findCatch)
         if(findCatch){
@@ -81,7 +85,7 @@ const getUrl = async(req,res)=>{
        }
       else {
     let fetchUrl =await urlModel.findOne({urlCode:req.params.urlCode})
-            if(!fetchUrl){ res.send("invalid urlCode")}
+            if(!fetchUrl){ res.status(404).send(" urlCode not found")}
             else{ await SET_ASYNC(`${urlCode}`, JSON.stringify(fetchUrl))
             res.status(301).redirect(fetchUrl.longUrl)  }
         }
